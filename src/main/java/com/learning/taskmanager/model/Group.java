@@ -1,18 +1,18 @@
 package com.learning.taskmanager.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
-@Table(name = "tasks")
+@Table(name = "groups")
 @Data
-public class Task {
-
+public class Group {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -20,16 +20,9 @@ public class Task {
     @Column(nullable = false, length = 100)
     private String title;
 
-    @Column(columnDefinition = "TEXT")
-    private String description;
-
-    @Column(nullable = false)
-    private boolean completed = false;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "group_id")
-    @JsonBackReference
-    private Group group;
+    @OneToMany(mappedBy = "group", fetch =  FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<Task> tasks;
 
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
@@ -37,4 +30,5 @@ public class Task {
 
     @UpdateTimestamp
     private LocalDateTime updatedAt;
+
 }

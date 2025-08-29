@@ -3,6 +3,8 @@ package com.learning.taskmanager.controller;
 import com.learning.taskmanager.model.Task;
 import com.learning.taskmanager.service.TaskService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,12 +14,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TaskController {
 
-    // Injecting TaskService
     private final TaskService taskService;
 
-    @GetMapping("/all")
-    public List<Task> getAllTasks() {
-        return taskService.getAllTasks();
+    @GetMapping
+    public ResponseEntity<List<Task>> getAllTasks() {
+        List<Task> tasks = taskService.getAllTasks();
+        return ResponseEntity.ok(tasks);
     }
 
     @GetMapping("/{id}")
@@ -26,16 +28,23 @@ public class TaskController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public Task createTask(@RequestBody Task task) {
         return taskService.createTask(task);
     }
 
     @PutMapping("/{id}")
-    public Task updateTask(@PathVariable Long id, @RequestBody Task updatedTask) {
-        return taskService.updateTask(id, updatedTask);
+    public ResponseEntity<Task> updateTask(@PathVariable Long id, @RequestBody Task updatedTask) {
+        try {
+            Task task = taskService.updateTask(id, updatedTask);
+            return ResponseEntity.ok(task);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteTask(@PathVariable Long id) {
         taskService.deleteTask(id);
     }
