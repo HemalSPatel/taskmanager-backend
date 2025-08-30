@@ -22,6 +22,12 @@ public class TaskController {
         return ResponseEntity.ok(tasks);
     }
 
+    @GetMapping("/ungrouped")
+    public ResponseEntity<List<Task>> getAllUngroupedTasks() {
+        List<Task> tasks = taskService.getAllUngroupedTasks();
+        return ResponseEntity.ok(tasks);
+    }
+
     @GetMapping("/{id}")
     public Task getTaskById(@PathVariable Long id) {
         return taskService.getTaskById(id);
@@ -47,5 +53,25 @@ public class TaskController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteTask(@PathVariable Long id) {
         taskService.deleteTask(id);
+    }
+
+    @PutMapping("/{taskId}/group/{groupId}")
+    public ResponseEntity<Task> assignTaskToGroup(@PathVariable Long taskId, @PathVariable Long groupId) {
+        try {
+            Task task = taskService.assignTaskToGroup(taskId, groupId);
+            return ResponseEntity.ok(task);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PutMapping("/{taskId}/remove-group")
+    public ResponseEntity<Task> removeTaskFromGroup(@PathVariable Long taskId) {
+        try {
+            Task task = taskService.removeTaskFromGroup(taskId);
+            return ResponseEntity.ok(task);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 }
