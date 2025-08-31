@@ -1,6 +1,8 @@
 package com.learning.taskmanager.controller;
 
+import com.learning.taskmanager.exception.ResourceNotFoundException;
 import com.learning.taskmanager.model.Group;
+import com.learning.taskmanager.model.Task;
 import com.learning.taskmanager.service.GroupService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,13 +25,8 @@ public class GroupController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Group> getGroupById(@PathVariable Long id) {
-        try {
-            Group group = groupService.findById(id);
-            return ResponseEntity.ok(group);
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+    public Group getGroupById(@PathVariable Long id) {
+        return groupService.findById(id);
     }
 
     @PostMapping
@@ -39,13 +36,8 @@ public class GroupController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Group> updateGroup(@PathVariable Long id, @RequestBody Group updatedGroup) {
-        try {
-            Group group = groupService.updateGroup(id, updatedGroup);
-            return ResponseEntity.ok(group);
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+    public Group updateGroup(@PathVariable Long id, @RequestBody Group updatedGroup) {
+        return groupService.updateGroup(id, updatedGroup);
     }
 
     @DeleteMapping("/{id}")
@@ -55,12 +47,8 @@ public class GroupController {
     }
 
     @GetMapping("{id}/tasks")
-    public ResponseEntity<List<?>> getTasksByGroupId(@PathVariable Long id) {
-        try {
-            Group group = groupService.findById(id);
-            return ResponseEntity.ok(group.getTasks());
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+    public List<Task> getTasksByGroupId(@PathVariable Long id) {
+        Group group = groupService.findById(id);
+        return group.getTasks();
     }
 }

@@ -1,5 +1,6 @@
 package com.learning.taskmanager.service;
 
+import com.learning.taskmanager.exception.ResourceNotFoundException;
 import com.learning.taskmanager.model.Group;
 import com.learning.taskmanager.repository.GroupRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +19,7 @@ public class GroupService {
     }
 
     public Group findById(Long id) {
-        return groupRepository.findById(id).orElseThrow(() -> new RuntimeException("Group not found"));
+        return groupRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Group not found with id: " + id));
     }
 
     public Group createGroup(Group group) {
@@ -26,7 +27,7 @@ public class GroupService {
     }
 
     public Group updateGroup(Long id, Group updatedGroup) {
-        Group group = groupRepository.findById(id).orElseThrow(() -> new RuntimeException("Group not found"));
+        Group group = groupRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Group not found with id: " + id));
         group.setTitle(updatedGroup.getTitle());
         return groupRepository.save(group);
     }

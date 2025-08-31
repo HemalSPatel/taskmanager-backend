@@ -1,5 +1,6 @@
 package com.learning.taskmanager.service;
 
+import com.learning.taskmanager.exception.ResourceNotFoundException;
 import com.learning.taskmanager.model.Task;
 import com.learning.taskmanager.repository.GroupRepository;
 import com.learning.taskmanager.repository.TaskRepository;
@@ -24,7 +25,7 @@ public class TaskService {
     }
 
     public Task getTaskById(Long id) {
-        return taskRepository.findById(id).orElseThrow(() -> new RuntimeException("Task not found"));
+        return taskRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Task not found"));
     }
 
     public Task createTask(Task task) {
@@ -33,12 +34,12 @@ public class TaskService {
         } else if (task.getGroup() == null) {
             return taskRepository.save(task);
         } else {
-            throw new RuntimeException("Group not found");
+            throw new ResourceNotFoundException("Group not found");
         }
     }
 
     public Task updateTask(Long id, Task updatedTask) {
-        Task task = taskRepository.findById(id).orElseThrow(() -> new RuntimeException("Task not found"));
+        Task task = taskRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Task not found"));
         task.setDescription(updatedTask.getDescription());
         task.setTitle(updatedTask.getTitle());
         task.setCompleted(updatedTask.isCompleted());
@@ -49,14 +50,14 @@ public class TaskService {
     }
 
     public Task assignTaskToGroup(Long taskId, Long groupId) {
-        Task task = taskRepository.findById(taskId).orElseThrow(() -> new RuntimeException("Task not found"));
-        var group = groupRepository.findById(groupId).orElseThrow(() -> new RuntimeException("Group not found"));
+        Task task = taskRepository.findById(taskId).orElseThrow(() -> new ResourceNotFoundException("Task not found"));
+        var group = groupRepository.findById(groupId).orElseThrow(() -> new ResourceNotFoundException("Group not found"));
         task.setGroup(group);
         return taskRepository.save(task);
     }
 
     public Task removeTaskFromGroup(Long taskId) {
-        Task task = taskRepository.findById(taskId).orElseThrow(() -> new RuntimeException("Task not found"));
+        Task task = taskRepository.findById(taskId).orElseThrow(() -> new ResourceNotFoundException("Task not found"));
         task.setGroup(null);
         return taskRepository.save(task);
     }
