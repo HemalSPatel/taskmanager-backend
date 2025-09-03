@@ -25,7 +25,7 @@ public class TaskService {
     }
 
     public Task getTaskById(Long id) {
-        return taskRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Task not found"));
+        return taskRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Task not found with id: " + id));
     }
 
     public Task createTask(Task task) {
@@ -34,12 +34,12 @@ public class TaskService {
         } else if (task.getGroup() == null) {
             return taskRepository.save(task);
         } else {
-            throw new ResourceNotFoundException("Group not found");
+            throw new ResourceNotFoundException("Group not found with id: " + task.getGroup().getId());
         }
     }
 
     public Task updateTask(Long id, Task updatedTask) {
-        Task task = taskRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Task not found"));
+        Task task = taskRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Task not found with id: " + id));
         task.setDescription(updatedTask.getDescription());
         task.setTitle(updatedTask.getTitle());
         task.setCompleted(updatedTask.isCompleted());
@@ -50,14 +50,14 @@ public class TaskService {
     }
 
     public Task assignTaskToGroup(Long taskId, Long groupId) {
-        Task task = taskRepository.findById(taskId).orElseThrow(() -> new ResourceNotFoundException("Task not found"));
-        var group = groupRepository.findById(groupId).orElseThrow(() -> new ResourceNotFoundException("Group not found"));
+        Task task = taskRepository.findById(taskId).orElseThrow(() -> new ResourceNotFoundException("Task not found with id: " + taskId));
+        var group = groupRepository.findById(groupId).orElseThrow(() -> new ResourceNotFoundException("Group not found with id: " + groupId));
         task.setGroup(group);
         return taskRepository.save(task);
     }
 
     public Task removeTaskFromGroup(Long taskId) {
-        Task task = taskRepository.findById(taskId).orElseThrow(() -> new ResourceNotFoundException("Task not found"));
+        Task task = taskRepository.findById(taskId).orElseThrow(() -> new ResourceNotFoundException("Task not found with id: " + taskId));
         task.setGroup(null);
         return taskRepository.save(task);
     }
