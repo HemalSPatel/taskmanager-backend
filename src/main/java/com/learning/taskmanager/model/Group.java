@@ -24,6 +24,9 @@ public class Group {
     @JsonManagedReference
     private List<Task> tasks;
 
+    @Transient
+    private Integer taskCount;
+
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
