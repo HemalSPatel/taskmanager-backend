@@ -1,6 +1,9 @@
 package com.learning.taskmanager.service;
 
+import com.learning.taskmanager.dto.request.TaskRequest;
+import com.learning.taskmanager.dto.response.TaskResponse;
 import com.learning.taskmanager.exception.ResourceNotFoundException;
+import com.learning.taskmanager.model.Group;
 import com.learning.taskmanager.model.Task;
 import com.learning.taskmanager.repository.GroupRepository;
 import com.learning.taskmanager.repository.TaskRepository;
@@ -28,14 +31,19 @@ public class TaskService {
         return taskRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Task not found with id: " + id));
     }
 
-    public Task createTask(Task task) {
-        if (task.getGroup() != null && groupRepository.existsById(task.getGroup().getId())) {
-            return taskRepository.save(task);
-        } else if (task.getGroup() == null) {
-            return taskRepository.save(task);
-        } else {
-            throw new ResourceNotFoundException("Group not found with id: " + task.getGroup().getId());
+    public TaskResponse createTask(TaskRequest request) {
+        Task task = new Task();
+        task.setTitle(request.getTitle());
+        task.setDescription(request.getDescription());
+        task.setCompleted(request.getCompleted() != null ? request.getCompleted() : false);
+
+        if (request.getGroupId() != null) {
+            Group group = groupRepository.findById(request.getGroupId()).orElseThrow(() -> new ResourceNotFoundException("Group not found"));
+            task.setGroup(group);
         }
+
+        Task savedTask = taskRepository.save(task);
+        return convertToResponse(savedTask);
     }
 
     public Task updateTask(Long id, Task updatedTask) {
@@ -60,6 +68,23 @@ public class TaskService {
         Task task = taskRepository.findById(taskId).orElseThrow(() -> new ResourceNotFoundException("Task not found with id: " + taskId));
         task.setGroup(null);
         return taskRepository.save(task);
+    }
+
+
+    private TaskResponse convertToResponse(Task task) {
+        TaskResponse response = new TaskResponse();
+        response.setId(task.getId());
+        response.setTitle(task.getTitle());
+        response.setDescription(task.getDescription());
+        response.setCompleted(task.isCompleted());
+        response.setCreatedAt(task.getCreatedAt());
+        response.setUpdatedAt(task.getUpdatedAt());
+
+        if (task.getGroup() != null) {
+            response.setGroupId(task.getGroup().getId());
+            response.setGroupTitle(task.getGroup().getTitle());
+        }
+        return response;
     }
 
 }

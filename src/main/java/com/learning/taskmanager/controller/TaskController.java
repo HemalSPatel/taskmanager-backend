@@ -1,5 +1,7 @@
 package com.learning.taskmanager.controller;
 
+import com.learning.taskmanager.dto.request.TaskRequest;
+import com.learning.taskmanager.dto.response.TaskResponse;
 import com.learning.taskmanager.model.Task;
 import com.learning.taskmanager.service.TaskService;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +37,7 @@ public class TaskController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Task createTask(@RequestBody Task task) {
+    public TaskResponse createTask(@RequestBody TaskRequest task) {
         return taskService.createTask(task);
     }
 
