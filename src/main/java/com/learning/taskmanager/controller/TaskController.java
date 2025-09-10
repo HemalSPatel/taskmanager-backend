@@ -19,19 +19,19 @@ public class TaskController {
     private final TaskService taskService;
 
     @GetMapping
-    public ResponseEntity<List<Task>> getAllTasks() {
-        List<Task> tasks = taskService.getAllTasks();
+    public ResponseEntity<List<TaskResponse>> getAllTasks() {
+        List<TaskResponse> tasks = taskService.getAllTasks();
         return ResponseEntity.ok(tasks);
     }
 
     @GetMapping("/ungrouped")
-    public ResponseEntity<List<Task>> getAllUngroupedTasks() {
-        List<Task> tasks = taskService.getAllUngroupedTasks();
+    public ResponseEntity<List<TaskResponse>> getAllUngroupedTasks() {
+        List<TaskResponse> tasks = taskService.getAllUngroupedTasks();
         return ResponseEntity.ok(tasks);
     }
 
     @GetMapping("/{id}")
-    public Task getTaskById(@PathVariable Long id) {
+    public TaskResponse getTaskById(@PathVariable Long id) {
         return taskService.getTaskById(id);
     }
 
@@ -42,9 +42,9 @@ public class TaskController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Task> updateTask(@PathVariable Long id, @RequestBody Task updatedTask) {
+    public ResponseEntity<TaskResponse> updateTask(@PathVariable Long id, @RequestBody Task updatedTask) {
         try {
-            Task task = taskService.updateTask(id, updatedTask);
+            TaskResponse task = taskService.updateTask(id, updatedTask);
             return ResponseEntity.ok(task);
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
@@ -58,9 +58,9 @@ public class TaskController {
     }
 
     @PutMapping("/{taskId}/group/{groupId}")
-    public ResponseEntity<Task> assignTaskToGroup(@PathVariable Long taskId, @PathVariable Long groupId) {
+    public ResponseEntity<TaskResponse> assignTaskToGroup(@PathVariable Long taskId, @PathVariable Long groupId) {
         try {
-            Task task = taskService.assignTaskToGroup(taskId, groupId);
+            TaskResponse task = taskService.assignTaskToGroup(taskId, groupId);
             return ResponseEntity.ok(task);
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
@@ -68,9 +68,9 @@ public class TaskController {
     }
 
     @PutMapping("/{taskId}/remove-group")
-    public ResponseEntity<Task> removeTaskFromGroup(@PathVariable Long taskId) {
+    public ResponseEntity<TaskResponse> removeTaskFromGroup(@PathVariable Long taskId) {
         try {
-            Task task = taskService.removeTaskFromGroup(taskId);
+            TaskResponse task = taskService.removeTaskFromGroup(taskId);
             return ResponseEntity.ok(task);
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
