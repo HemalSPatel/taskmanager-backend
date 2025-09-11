@@ -1,5 +1,7 @@
 package com.learning.taskmanager.controller;
 
+import com.learning.taskmanager.dto.response.GroupResponse;
+import com.learning.taskmanager.dto.response.TaskResponse;
 import com.learning.taskmanager.exception.ResourceNotFoundException;
 import com.learning.taskmanager.model.Group;
 import com.learning.taskmanager.model.Task;
@@ -19,24 +21,24 @@ public class GroupController {
     private final GroupService groupService;
 
     @GetMapping
-    public ResponseEntity<List<Group>> getAllGroups() {
-        List<Group> groups = groupService.findAll();
+    public ResponseEntity<List<GroupResponse>> getAllGroups() {
+        List<GroupResponse> groups = groupService.findAll();
         return ResponseEntity.ok(groups);
     }
 
     @GetMapping("/{id}")
-    public Group getGroupById(@PathVariable Long id) {
-        return groupService.findById(id);
+    public GroupResponse getGroupById(@PathVariable Long id) {
+        return groupService.findByIdWithTaskCount(id);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Group createGroup(@RequestBody Group group) {
+    public GroupResponse createGroup(@RequestBody Group group) {
         return groupService.createGroup(group);
     }
 
     @PutMapping("/{id}")
-    public Group updateGroup(@PathVariable Long id, @RequestBody Group updatedGroup) {
+    public GroupResponse updateGroup(@PathVariable Long id, @RequestBody Group updatedGroup) {
         return groupService.updateGroup(id, updatedGroup);
     }
 
