@@ -1,8 +1,6 @@
 package com.learning.taskmanager.controller;
 
 import com.learning.taskmanager.dto.response.GroupResponse;
-import com.learning.taskmanager.dto.response.TaskResponse;
-import com.learning.taskmanager.exception.ResourceNotFoundException;
 import com.learning.taskmanager.model.Group;
 import com.learning.taskmanager.model.Task;
 import com.learning.taskmanager.service.GroupService;

@@ -16,7 +16,6 @@ public interface GroupRepository extends JpaRepository<Group, Long> {
             "GROUP BY g.id, g.title, g.createdAt, g.updatedAt")
     List<GroupResponse> findAllWithTaskCount();
 
-    //findByIdWithTaskCount
     @Query("SELECT new com.learning.taskmanager.dto.response.GroupResponse(g.id, g.title, COUNT(t), g.createdAt, g.updatedAt) " +
             "FROM Group g LEFT JOIN g.tasks t " +
             "WHERE g.id = :id " +
