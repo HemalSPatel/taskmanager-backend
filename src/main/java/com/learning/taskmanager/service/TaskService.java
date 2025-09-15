@@ -49,11 +49,17 @@ public class TaskService {
         return convertToResponse(savedTask);
     }
 
-    public TaskResponse updateTask(Long id, Task updatedTask) {
+    public TaskResponse updateTask(Long id, TaskRequest updatedTask) {
         Task task = taskRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Task not found with id: " + id));
         task.setDescription(updatedTask.getDescription());
         task.setTitle(updatedTask.getTitle());
-        task.setCompleted(updatedTask.isCompleted());
+        task.setCompleted(updatedTask.getCompleted() != null ? updatedTask.getCompleted() : false);
+        if (updatedTask.getGroupId() != null) {
+            Group group = groupRepository.findById(updatedTask.getGroupId()).orElseThrow(() -> new ResourceNotFoundException("Group not found"));
+            task.setGroup(group);
+        } else {
+            task.setGroup(null);
+        }
         Task savedTask = taskRepository.save(task);
         return convertToResponse(savedTask);
     }
