@@ -1,8 +1,10 @@
 package com.learning.taskmanager.service;
 
 import com.learning.taskmanager.dto.response.GroupResponse;
+import com.learning.taskmanager.dto.response.TaskResponse;
 import com.learning.taskmanager.exception.ResourceNotFoundException;
 import com.learning.taskmanager.model.Group;
+import com.learning.taskmanager.model.Task;
 import com.learning.taskmanager.repository.GroupRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -49,6 +51,28 @@ public class GroupService {
         groupRepository.deleteById(id);
     }
 
+    public List<TaskResponse> getTasksByGroupId(Long id) {
+        Group group = groupRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Group not found with id: " + id));
+        List<Task> tasks = group.getTasks();
+        return tasks.stream().map(this::convertToResponse).toList();
+    }
+
+    private TaskResponse convertToResponse(Task task) {
+        TaskResponse response = new TaskResponse();
+        response.setId(task.getId());
+        response.setTitle(task.getTitle());
+        response.setDescription(task.getDescription());
+        response.setCompleted(task.isCompleted());
+        response.setCreatedAt(task.getCreatedAt());
+        response.setUpdatedAt(task.getUpdatedAt());
+
+        if (task.getGroup() != null) {
+            response.setGroupId(task.getGroup().getId());
+            response.setGroupTitle(task.getGroup().getTitle());
+        }
+        return response;
+    }
+
     private GroupResponse convertToResponse(Group group) {
         return new GroupResponse(
                 group.getId(),
@@ -58,5 +82,4 @@ public class GroupService {
                 group.getUpdatedAt()
         );
     }
-
 }
