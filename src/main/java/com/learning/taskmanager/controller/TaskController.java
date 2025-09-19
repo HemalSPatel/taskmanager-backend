@@ -2,7 +2,6 @@ package com.learning.taskmanager.controller;
 
 import com.learning.taskmanager.dto.request.TaskRequest;
 import com.learning.taskmanager.dto.response.TaskResponse;
-import com.learning.taskmanager.model.Task;
 import com.learning.taskmanager.service.TaskService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -55,16 +54,6 @@ public class TaskController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteTask(@PathVariable Long id) {
         taskService.deleteTask(id);
-    }
-
-    @PutMapping("/{taskId}/group/{groupId}")
-    public ResponseEntity<TaskResponse> assignTaskToGroup(@PathVariable Long taskId, @PathVariable Long groupId) {
-        try {
-            TaskResponse task = taskService.assignTaskToGroup(taskId, groupId);
-            return ResponseEntity.ok(task);
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
     }
 
     @PutMapping("/{taskId}/remove-group")

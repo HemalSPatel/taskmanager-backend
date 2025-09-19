@@ -67,13 +67,6 @@ public class TaskService {
         taskRepository.deleteById(id);
     }
 
-    public TaskResponse assignTaskToGroup(Long taskId, Long groupId) {
-        Task task = taskRepository.findById(taskId).orElseThrow(() -> new ResourceNotFoundException("Task not found with id: " + taskId));
-        var group = groupRepository.findById(groupId).orElseThrow(() -> new ResourceNotFoundException("Group not found with id: " + groupId));
-        task.setGroup(group);
-        Task updatedTask = taskRepository.save(task);
-        return convertToResponse(updatedTask);
-    }
 
     public TaskResponse removeTaskFromGroup(Long taskId) {
         Task task = taskRepository.findById(taskId).orElseThrow(() -> new ResourceNotFoundException("Task not found with id: " + taskId));
