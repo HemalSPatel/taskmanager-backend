@@ -43,7 +43,18 @@ public class GroupController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteGroup(@PathVariable Long id) {
+    public void deleteGroupWithTasks(@PathVariable Long id) {
+        groupService.deleteById(id);
+    }
+
+    @DeleteMapping("/{id}/keep-tasks")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteGroupWithoutTasks(@PathVariable Long id) {
+        Group group = groupService.findById(id);
+        List<Task> tasks = group.getTasks();
+        for (Task task : tasks) {
+            task.setGroup(null);
+        }
         groupService.deleteById(id);
     }
 

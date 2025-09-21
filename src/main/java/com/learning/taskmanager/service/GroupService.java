@@ -6,6 +6,7 @@ import com.learning.taskmanager.exception.ResourceNotFoundException;
 import com.learning.taskmanager.model.Group;
 import com.learning.taskmanager.model.Task;
 import com.learning.taskmanager.repository.GroupRepository;
+import com.learning.taskmanager.repository.TaskRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +17,7 @@ import java.util.List;
 public class GroupService {
 
     private final GroupRepository groupRepository;
+    private final TaskRepository taskRepository;
 
     public List<GroupResponse> findAll() {
         return groupRepository.findAllWithTaskCount();
@@ -48,6 +50,11 @@ public class GroupService {
     }
 
     public void deleteById(Long id) {
+        Group group = groupRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Group not found with id: " + id));
+        List<Task>tasks = group.getTasks();
+        for (Task task : tasks) {
+            taskRepository.deleteById(task.getId());
+        }
         groupRepository.deleteById(id);
     }
 
@@ -82,4 +89,6 @@ public class GroupService {
                 group.getUpdatedAt()
         );
     }
+
+
 }
