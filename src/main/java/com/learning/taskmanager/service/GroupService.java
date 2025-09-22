@@ -51,11 +51,29 @@ public class GroupService {
 
     public void deleteById(Long id) {
         Group group = groupRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Group not found with id: " + id));
-        List<Task>tasks = group.getTasks();
+        List<Task> tasks = group.getTasks();
         for (Task task : tasks) {
             taskRepository.deleteById(task.getId());
         }
         groupRepository.deleteById(id);
+    }
+
+    public void deleteGroupOnly(Long id) {
+        Group group = groupRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Group not found with id: " + id));
+        if (group.getTasks() != null) {
+            group.getTasks().clear();
+        }
+        groupRepository.deleteById(id);
+    }
+
+    public void disassociateTasksFromGroup(Long id) {
+        Group group = groupRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Group not found with id: " + id));
+        List<Task> tasks = group.getTasks();
+        for (Task task : tasks) {
+            task.setGroup(null);
+            taskRepository.save(task);
+        }
+        group.setTasks(null);
     }
 
     public List<TaskResponse> getTasksByGroupId(Long id) {
